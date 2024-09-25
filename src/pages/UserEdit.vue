@@ -1,6 +1,7 @@
 <template>
   <van-form @submit="onSubmit">
     <van-cell-group inset>
+      <!--性别-->
       <van-field
           v-if="editUser.editKey === 'gender'"
           v-model="sex"
@@ -8,6 +9,7 @@
           :label="editUser.editName"
           :placeholder="`请输入${editUser.editName}`"
       />
+      <!--图片-->
       <van-field v-else-if="editUser.editKey === 'avatarUrl'" name="uploader" label="图片上传">
         <template #input>
           <van-uploader v-model="fileList" :max-count="1" :after-read="afterRead" :max-size="1024 * 1024" reupload
@@ -25,7 +27,6 @@
                  style="margin: 5px 5px" @click="addTag(tag.text)">
           {{ tag.text }}
         </van-tag>
-
       </div>
       <van-field
           v-else
@@ -91,8 +92,8 @@ const router = useRouter();
 const sex = ref()
 const editUser = ref({
   editKey: route.query.editKey,
-  editName: route.query.editName,
-  currentValue: route.query.currentValue
+  editName: route.query.editName,  // 对参数进行解码
+  currentValue: route.query.currentValue // 对参数进行解码
 })
 sex.value = userGenderEnum[editUser.value.currentValue]
 const onSubmit = async () => {
@@ -142,7 +143,10 @@ const onOversize = (file: any) => {
 
 //标签
 const tags = ref([]);
-const obj = JSON.parse(editUser.value.currentValue)
+let obj = '';
+if (editUser.value.editKey === 'tags'){
+  obj = JSON.parse(editUser.value.currentValue)
+}
 for (let i in obj) {
   tags.value.push(obj [i])
 }
@@ -211,7 +215,7 @@ const onChecked = () => {
 }
 
 const AddTags = async () => {
-  if (tagName.value === ''){
+  if (tagName.value === '') {
     showFailToast("请输入标签名称")
     return;
   }
@@ -221,10 +225,10 @@ const AddTags = async () => {
     "parentId": result.value.id,
     "tagName": tagName.value,
   })
-  if (res.code === 0){
+  if (res.code === 0) {
     showSuccessToast("添加成功")
     await onSubmit();
-  }else {
+  } else {
     showFailToast("添加失败")
   }
 }
