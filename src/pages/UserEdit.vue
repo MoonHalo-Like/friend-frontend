@@ -38,7 +38,7 @@
     </van-cell-group>
     <div style="margin: 16px;">
       <!--    添加标签-->
-      <van-cell center title="添加标签">
+      <van-cell center title="添加标签" v-if="editUser.editKey === 'tags'">
         <template #right-icon>
           <van-switch v-model="checked" @click="onChecked"/>
         </template>
